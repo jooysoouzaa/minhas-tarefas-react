@@ -14,9 +14,15 @@ const Formulario = () => {
   const [titulo, setTitulo] = useState('')
   const [descricao, setDescricao] = useState('')
   const [prioridade, setPrioridade] = useState(enums.Prioridade.NORMAL)
+  const [erro, setErro] = useState('')
 
   const cadastrarTarefa = (evento: FormEvent) => {
     evento.preventDefault()
+
+    if (!titulo.trim() || !descricao.trim()) {
+      setErro('Título e descrição são obrigatórios.')
+      return
+    }
 
     dispatch(
       cadastrar({
@@ -28,24 +34,27 @@ const Formulario = () => {
     )
     navigate('/')
   }
+
   return (
     <MainContainer>
       <Titulo>Adicione uma nova tarefa</Titulo>
       <Form onSubmit={cadastrarTarefa}>
+        {erro && <p style={{ color: 'red' }}>{erro}</p>}
         <Campo
           value={titulo}
           onChange={(evento) => setTitulo(evento.target.value)}
           placeholder="Título da tarefa"
+          required
         />
         <Campo
           value={descricao}
           onChange={(evento) => setDescricao(evento.target.value)}
           as="textarea"
           placeholder="Descrição da tarefa"
+          required
         />
         <Opcoes>
           <p>Prioridade:</p>
-
           {Object.values(enums.Prioridade).map((prioridade) => (
             <Opcao key={prioridade}>
               <input
@@ -67,4 +76,5 @@ const Formulario = () => {
     </MainContainer>
   )
 }
+
 export default Formulario
